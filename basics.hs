@@ -38,7 +38,6 @@ fat n = n * fat (n-1)
 
 -- o operador ":" chamado de cons insere um elemento na frente da lista
 -- O operador ":" constrói uma listaa
--- o operador de concatenação "++" concatena duas listas.
 
 -- O primeiro elemento da lista é identificado como a cabeça(head) (x)
 -- Os demais são a cauda (tail) (xs)
@@ -46,3 +45,7 @@ fat n = n * fat (n-1)
 somaLista :: [Int] -> Int
 somaLista [] = 0
 somaLista (x:xs) = x + somaLista xs 
+
+-- o operador de concatenação "++" concatena duas listas.
+join :: [Int] -> [Int] -> [Int]
+join l1 l2 = l1 ++ l2
