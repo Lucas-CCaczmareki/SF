@@ -2,4 +2,4 @@
 -- verificar palindrono
 
 palindromo :: String -> Bool
-palindromo str = str == reverse str
+palindromo str = str == reverse str-- tipos
