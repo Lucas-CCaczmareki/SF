@@ -49,3 +49,43 @@ somaLista (x:xs) = x + somaLista xs
 -- o operador de concatenação "++" concatena duas listas.
 join :: [Int] -> [Int] -> [Int]
 join l1 l2 = l1 ++ l2
+
+
+-- Algoritmo para ordenação de listas
+-- divide-se o algoritmo em 2 passos:
+    -- 1: uma recursão que insere o elemento na posição correta e ordena a cauda da lista
+    -- 2: o algoritmo de inserção, que coloca o número na sua posição correta
+
+-- o algoritmo de inserção vai sempre receber um numero, uma lista, e devolver OUTRA lista
+ins :: Int -> [Int] -> [Int]
+ins a [] = [a] -- se recebe o numemro e lista vazia, insere.
+ins a (x:xs)
+    -- se o a for menor q o primeiro da lista, coloca ele lá
+    | a <= x = a : x : xs
+    | otherwise = x : ins a xs
+
+-- recebe uma instância de lista, e retorna a mesma ordenada
+iSort :: [Int] -> [Int]
+iSort [] = []
+iSort (x:xs) = ins x (iSort xs) -- passa a cauda ordenada também.
+
+-- uma lista pode ser recebida através de vários formatos diferentes
+-- x:xs, _:xs, x:_, [x] e []
+-- o _ significa que tu descarta uma parte
+
+-- tem funções já do haskell pra esse primeiro (head) e pro último (last)
+primeiro :: [Int] -> Int
+primeiro [] = error "lista vazia!"
+primeiro (x:_) = x -- recebe a lista, divide em head:tail e descarta(_) a tail
+
+ultimo :: [Int] -> Int
+ultimo [] = error "lista vazia!"
+ultimo [x] = x -- se for uma lista de um elemento, retorna o elemento
+ultimo (_:xs) = ultimo xs -- vai recursivamente até o último elemento
+
+maiorEmenor :: [Int] -> (Int, Int)
+maiorEmenor xs = (ultimo ordenada, primeiro ordenada)
+    -- O where, serve pra nessa equação local (o maiorEmenor) dar um nome
+    -- pra uma equação que vai ser reutilizada várias vezes
+    where ordenada = iSort xs
+
