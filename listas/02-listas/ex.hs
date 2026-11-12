@@ -11,10 +11,11 @@ ins a (x:xs)
     | a <= x = a : x : xs
     | otherwise = x : ins a xs
 
--- recebe uma instância de lista, e retorna a mesma ordenada
-iSort :: [Int] -> [Int]
-iSort [] = []
-iSort (x:xs) = ins x (iSort xs) -- passa a cauda ordenada também.
+ins_rep :: Int -> [Int] -> [Int]
+ins_rep a [] = [a]
+ins_rep a (x:xs)
+    | a == x = ins x xs
+    | otherwise = a : x : xs 
 
 -- exercício exemplo 1: achar o menor e o maior da lista com iSort
 
@@ -39,3 +40,10 @@ ultimo (_:xs) = ultimo xs -- vai recursivamente até o último elemento
 maiorEmenor2 :: [Int] -> (Int, Int)
 maiorEmenor2 xs = (ultimo ordenada, primeiro ordenada)
     where ordenada = iSort xs
+
+
+-- muda o comportamento mudando o ins
+-- recebe uma instância de lista, e retorna a mesma ordenada
+iSort :: [Int] -> [Int]
+iSort [] = []
+iSort (x:xs) = ins_rep x (iSort xs) -- passa a cauda ordenada também.

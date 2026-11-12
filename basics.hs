@@ -1,3 +1,4 @@
+import Distribution.SPDX (LicenseId(Caldera_no_preamble))
 -- iniciar interpretador GHCi: "ghci"
 -- fechar interpretador GHCi: ":q"
 -- carregar programas no interpretador: ":l nome_do_arquivo.hs"
@@ -89,3 +90,47 @@ maiorEmenor xs = (ultimo ordenada, primeiro ordenada)
     -- pra uma equação que vai ser reutilizada várias vezes
     where ordenada = iSort xs
 
+-- tipos algébricos: são usados para modelar coisas que não são facilmente representadas
+-- usando os tipos básicos. Como grafos e árvores.
+
+-- são descritos através da enumeração de elementos:
+-- os valores Frio e Calor são os construtores do tipo temperatura
+-- nomes de tipos e construtores começam com letras maiusculas
+data Temperatura = Frio | Calor
+    -- deriving é um atalho pra declarar quais capacidades o nosso tipo tem
+    -- eq permite comparar igualdade, e show permite ser impresso como string, por exemplo.
+    deriving(Eq, Show)
+
+
+data Estacao = Verao | Outono | Inverno | Primavera
+    deriving(Eq, Show)
+
+-- funcao pra avaliar nossos tipos.
+tempo :: Estacao -> Temperatura
+tempo x
+    | x == Verao = Calor
+    | otherwise = Frio
+
+-- Os construtores do tipo são os valores que eles podem assumir
+-- podem ser os criados ou os básicos
+data Forma = Circulo Float | Retangulo Float Float
+    deriving(Eq, Show)
+
+area :: Forma -> Float
+area (Circulo r) = pi * r * r -- se o forma receber um Circulo Float
+area (Retangulo b a) = b * a -- se o forma receber um Retangulo Float Float
+
+-- Os tipos algébricos também podem ser recursivos
+-- o tipo pode ser uma Folha Int 
+-- ou um Nodo Int com duas árvores (que podem ser folhas)
+data Arvore = Folha Int | Nodo Int Arvore Arvore
+    deriving(Eq, Show)
+
+-- arv1 :: Arvore
+arv1 = Nodo 10 (Nodo 14 (Nodo 1 (Folha 4) (Folha 2)) (Folha 6)) (Folha 9)
+-- Nodo Int (10) Arv(...) Arv(...)
+
+-- exemplo de função usando um tipo algébrico recursivo
+somaArvore :: Arvore -> Int
+somaArvore (Folha n) = n
+somaArvore (Nodo n a1 a2) = n + somaArvore a1 + somaArvore a2
