@@ -134,3 +134,69 @@ arv1 = Nodo 10 (Nodo 14 (Nodo 1 (Folha 4) (Folha 2)) (Folha 6)) (Folha 9)
 somaArvore :: Arvore -> Int
 somaArvore (Folha n) = n
 somaArvore (Nodo n a1 a2) = n + somaArvore a1 + somaArvore a2
+
+-- implementando os numeros naturais de semantica formal em haskell
+data N = Zero | Suc N
+    deriving(Eq, Show)
+
+soma :: N -> N -> N
+soma Zero n = n                     -- n1 = Zero e n com todos os sucs. retorna
+soma (Suc n1) n2 = soma n1 (Suc n2) -- tirar um suc do n1 e colocar no n2 até o n1 ser zero
+
+-- A semântica operacional descreve a semântica de uma linguagem através 
+-- da descrição de um interpretador/maquina virtual.
+
+-- BIG STEP
+-- ↓: E → N
+-- recebe uma expressão e devolve o resultado da avaliação
+
+-- em haskell podemos usar tipos algébricos para construir a linguagem
+-- LINGUAGEM DE EXPRESSÕES ARTIMÉTICAS
+-- E:= n | E + E | E * E vira
+data E = Num Int | Soma E E | Mult E E
+    deriving(Eq, Show)
+
+-- exemplo: 1 + 2 * 3
+prog1 :: E
+prog1 = Soma (Num 1) (Mult (Num 2) (Num 3))
+
+-- exemplo 2: (2*3)+(4*5)
+prog2 :: E
+prog2 = Soma (Mult (Num 2) (Num 3))
+             (Mult (Num 4) (Num 5))
+
+-- implementação da função semântica
+bigStepE :: E -> Int -- E é nosso tipo algébrico que representa a linguagem de expressões aritméticas
+-- Semânticas
+bigStepE (Num n) = n                                    -- semântica NUM
+bigStepE (Soma e1 e2) = (bigStepE e1) + (bigStepE e2)   -- semântica SOMA
+bigStepE (Mult e1 e2) = (bigStepE e1) * (bigStepE e2)   -- semântica MULT
+
+-- LINGUAGEM DE EXPRESSÕES BOOLEANAS
+data B = TRUE | FALSE | Not B | And B B | Or B B
+    deriving (Eq, Show)
+
+-- exemplo: TRUE && FALSE || TRUE
+prog3 :: B
+prog3 = Or (And TRUE FALSE) TRUE
+
+-- exemplo: TRUE && FALSE || FALSE && TRUE
+prog4 :: B
+prog4 = Or (And TRUE FALSE) (And FALSE TRUE)
+
+bigStepB :: B -> Bool
+bigStepB TRUE = True
+bigStepB FALSE = False
+bigStepB (Not b)
+    | bigStepB b == True = False
+    | otherwise = True
+bigStepB (And b1 b2)
+-- avaliação em curto circuto, se a 1a é falsa já retorna falso
+-- se não, o resultado do E é igual ao resultado da segunda, retorna ela
+    | bigStepB b1 == False = False
+    | otherwise = bigStepB b2
+-- mesma ideia da avaliação em curto circuito adaptada pro OR
+-- um true leva tudo à true, se o 1o é false, o resultado é igual à segunda
+bigStepB (Or b1 b2)
+    | bigStepB b1 == True = True
+    | otherwise = bigStepB b2
