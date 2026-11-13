@@ -190,23 +190,62 @@ cbigStep (Unless b c1 c2, mem)
 cbigStep (Assert b c, mem)
     | bbigStep(b, mem) == True = cbigStep(c, mem)   -- se for true executa
     | otherwise = cbigStep(Skip, mem)               -- se for false n faz nada
-   
+
+
+exSigma2 :: Memoria
+exSigma2 = [("x",3), ("y",0), ("z",0)]
+
+exSigma3 :: Memoria
+exSigma3 = [("x", 1), ("y", 2), ("z", 3)]
 --------------------------------------
 ---
 --- Exemplos de programas para teste
 ---
 --- O ALUNO DEVE IMPLEMENTAR EXEMPLOS DE PROGRAMAS QUE USEM TODOS OS COMANDOS NOVOS:
--- * SevenTimes
--- * DoWhile
--- * DuplaAtribuicao
--- * AtribCond
--- * Swap
--- * Unless
--- * Assert
--------------------------------------
 
-exSigma2 :: Memoria
-exSigma2 = [("x",3), ("y",0), ("z",0)]
+-- * SevenTimes
+-- Incrementa 1 sete vezes na variável "x"
+prog7x :: C
+prog7x = (SevenTimes (Atrib (Var "x") (Soma (Var "x") (Num 1))))
+
+-- * DoWhile
+progDoWhile :: C
+progDoWhile = (DoWhile (Seq 
+                        (Atrib (Var "temp") (Sub (Var "temp") (Num 10)))    -- drecrementa de 10 em 10
+                        (Atrib (Var "y") (Soma (Var "y") (Num 1))))         -- incrementa de 1 em 1 
+                        (Leq (Var "y") (Num 4)))                            -- repete os 2 comandos da sequência enquanto y <= 4
+
+-- * DuplaAtribuicao
+prog2Atrib :: C
+prog2Atrib = (DuplaAtrib (Var "temp") (Var "y")
+              (Div (Mult (Var "x") (Num 5)) (Num 2)) -- 1a expr: x(10) * 5 / 2
+              (Mult (Num 2) (Var "temp"))) -- 2a expr: 2 * temp(0) pq ainda não atribuiu o 25 de cima.
+
+-- * AtribCond
+progAtribCond :: C
+progAtribCond = (AtribCond (Leq (Var "x") (Num 20)) -- booleano x(10) <= 20
+                           (Var "temp")  -- variavel pra onde vai o resultado da expressao
+                           (Soma (Num 5) (Num 8))   -- e1, aparece quando true
+                           (Div (Var "x") (Num 3))) -- e2, aparece quando false
+
+-- * Swap 
+progSwap :: C
+progSwap = (Seq 
+             (Atrib (Var "x") (Soma (Var "x") (Mult (Var "z") (Num 2)))) -- considerando sigma3 = x(1) + 2 * 3 = 7
+             (Swap (Var "x") (Var "y"))) -- considerando sigma 3 y = 2 troca com x = 7
+
+-- * Unless
+progUnless :: C
+progUnless = (Unless (Not (Igual (Var "x") (Var "y"))) -- (x != y) = False -> Not False -> True 
+                     (Atrib (Var "x") (Num 100))
+                     (Atrib (Var "x") (Num 67))) -- esse que vai ser executado, se a entrada for exSigma3
+
+-- * Assert
+progAssert1 = (Assert (TRUE) --  caso dê verdadeiro
+                     (prog7x))
+progAssert2 = (Assert (FALSE) -- caso dê falso
+                     (prog7x))
+-------------------------------------
 
 
 ---
@@ -229,8 +268,6 @@ progExp1 = Soma (Num 3) (Soma (Var "x") (Var "y"))
 
 ---
 --- Exemplos de expressões booleanas:
-
-
 teste1 :: B
 teste1 = (Leq (Soma (Num 3) (Num 3))  (Mult (Num 2) (Num 3)))
 
